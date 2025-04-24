@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-print(os.getenv('POSTGRES_USER'))
+print(os.getenv("POSTGRES_USER"))
 
 DATABASE_URL = (
     f"postgresql://{os.getenv('POSTGRES_USER')}:{os.getenv('POSTGRES_PASSWORD')}"

@@ -1,14 +1,25 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Security
+from app.auth.auth import get_current_user
 from app.db.base import Base
 from app.db.session import engine
-import app.models 
+from app.api import auth, user
 
 app = FastAPI()
+
+app.include_router(auth.router)
+app.include_router(user.router)
+
 
 @app.on_event("startup")
 def on_startup():
     Base.metadata.create_all(bind=engine)
 
+
 @app.get("/")
 def read_root():
     return {"message": "FastAPI + Postgres are live"}
+
+
+@app.get("/protected")
+async def protected_route(username: str = Security(get_current_user)):
+    return {"message": f"Hello, {username}! This is a protected resource."}
