@@ -1,8 +1,8 @@
 from fastapi import Depends, HTTPException
+from fastapi.security import OAuth2PasswordBearer
 import os
 from datetime import datetime, timedelta, timezone
 from typing import Optional
-from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
 from passlib.context import CryptContext
 
@@ -31,6 +31,7 @@ def get_current_user(token: str = Depends(oauth2_scheme)):
         detail="Could not validate credentials",
         headers={"WWW-Authenticate": "Bearer"},
     )
+
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         username: Optional[str] = payload.get("sub")

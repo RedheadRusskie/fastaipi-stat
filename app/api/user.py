@@ -8,7 +8,7 @@ from app.auth import pwd_context
 router = APIRouter()
 
 
-@router.post("/user/register")
+@router.post("/user")
 async def register_user(user_data: UserDTO, db: Session = Depends(get_db)):
     existing_user = db.query(User).filter(User.username == user_data.username).first()
 

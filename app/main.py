@@ -1,13 +1,14 @@
 from fastapi import FastAPI, Security
-from app.auth.auth import get_current_user
+from app.auth import get_current_user
 from app.db.base import Base
 from app.db.session import engine
-from app.api import auth, user
+from app.api import auth, dataset, user
 
 app = FastAPI()
 
 app.include_router(auth.router)
 app.include_router(user.router)
+app.include_router(dataset.router)
 
 
 @app.on_event("startup")

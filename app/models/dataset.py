@@ -1,9 +1,9 @@
 from sqlalchemy import Column, String, DateTime, ForeignKey
 from sqlalchemy.dialects.postgresql import UUID
-from datetime import datetime, timezone
-from app.db.base import Base
 from sqlalchemy.orm import relationship
+from datetime import datetime, timezone
 import uuid
+from app.db.base import Base
 
 
 class Dataset(Base):

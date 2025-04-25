@@ -1,7 +1,7 @@
 from sqlalchemy import Column, ForeignKey
 from sqlalchemy.dialects.postgresql import UUID, JSONB
-from app.db.base import Base
 import uuid
+from app.db.base import Base
 
 
 class DatasetRow(Base):
