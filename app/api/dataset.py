@@ -16,19 +16,20 @@ router = APIRouter()
 async def post_dataset(
     dataset_data: DatasetDTO,
     db: Session = Depends(get_db),
-    username: str = Security(get_current_user),
+    user_info: dict = Security(get_current_user),
 ):
+    user_id = user_info["user_id"]
 
-    user = db.query(User).filter(User.username == username).first()
+    user = db.query(User).filter(User.id == user_id).first()
 
-    if user is None:
+    if not user:
         raise HTTPException(
-            status_code=404, detail="Could not find user for dataset assignment"
+            status_code=404, detail="Could not find user by specified user ID"
         )
 
     new_dataset = Dataset(
         name=dataset_data.name,
-        user_id=user.id,
+        user_id=user_id,
         description=dataset_data.description,
     )
 
@@ -48,18 +49,23 @@ async def post_dataset(
 async def get_dataset(
     dataset_id: Optional[UUID] = None,
     db: Session = Depends(get_db),
-    username: str = Security(get_current_user),
+    user_info: dict = Security(get_current_user),
 ):
+    user_id = user_info["user_id"]
 
-    user = db.query(User).filter(User.username == username).first()
+    user = db.query(User).filter(User.id == user_id).first()
 
-    if user is None:
+    if not user:
         raise HTTPException(
-            status_code=404, detail="Could not find user to fetch datasets for"
+            status_code=404, detail="Could not find user by specified user ID"
         )
 
     if dataset_id is not None:
-        dataset = db.query(Dataset).filter(Dataset.id == dataset_id).first()
+        dataset = (
+            db.query(Dataset)
+            .filter(Dataset.id == dataset_id, Dataset.user_id == user_id)
+            .first()
+        )
 
         if dataset is None:
             raise HTTPException(
@@ -68,7 +74,7 @@ async def get_dataset(
 
         return dataset
 
-    datasets = db.query(Dataset).filter(Dataset.user_id == user.id).all()
+    datasets = db.query(Dataset).filter(Dataset.user_id == user_id).all()
 
     return datasets
 
@@ -77,20 +83,22 @@ async def get_dataset(
 async def delete_dataset(
     dataset_id: UUID,
     db: Session = Depends(get_db),
-    username: str = Security(get_current_user),
+    user_info: dict = Security(get_current_user),
 ):
-    user = db.query(User).filter(User.username == username).first()
+    user_id = user_info["user_id"]
 
-    if user is None:
+    user = db.query(User).filter(User.id == user_id).first()
+
+    if not user:
         raise HTTPException(
-            status_code=404, detail="Could not find user to fetch datasets for"
+            status_code=404, detail="Could not find user by specified user ID"
         )
 
     dataset_entry = (
         db.query(Dataset)
         .filter(
             Dataset.id == dataset_id,
-            Dataset.user_id == user.id,
+            Dataset.user_id == user_id,
         )
         .first()
     )

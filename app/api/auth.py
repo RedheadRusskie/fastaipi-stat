@@ -17,6 +17,6 @@ async def login_for_access_token(
     if user is None or not verify_password(form_data.password, user.hashed_password):
         raise HTTPException(status_code=400, detail="Incorrect username or password")
 
-    access_token = create_access_token(data={"sub": user.username})
+    access_token = create_access_token(username=user.username, user_id=str(user.id))
 
     return {"access_token": access_token, "token_type": "bearer"}
