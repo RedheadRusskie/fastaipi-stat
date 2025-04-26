@@ -2,12 +2,11 @@ from fastapi import APIRouter, HTTPException, Depends, Security
 from typing import List, Optional, Union
 from sqlalchemy.orm import Session
 from uuid import UUID
-from app.schemas import DatasetResponseDTO
+from app.schemas import DatasetDTO, DatasetResponseDTO
 from app.auth import get_current_user
 from app.models import User
 from app.db.dependencies import get_db
 from app.models import Dataset
-from app.schemas import DatasetDTO
 
 router = APIRouter()
 
@@ -54,7 +53,6 @@ async def get_dataset(
     user_id = user_info["user_id"]
 
     user = db.query(User).filter(User.id == user_id).first()
-
     if not user:
         raise HTTPException(
             status_code=404, detail="Could not find user by specified user ID"

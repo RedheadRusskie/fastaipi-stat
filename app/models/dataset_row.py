@@ -1,5 +1,6 @@
-from sqlalchemy import Column, ForeignKey
+from sqlalchemy import Column, ForeignKey, DateTime
 from sqlalchemy.dialects.postgresql import UUID, JSONB
+from datetime import datetime, timezone
 import uuid
 from app.db.base import Base
 
@@ -11,4 +12,5 @@ class DatasetRow(Base):
     dataset_id = Column(
         UUID(as_uuid=True), ForeignKey("dataset.id", ondelete="CASCADE"), nullable=False
     )
+    created_at = Column(DateTime, default=datetime.now(timezone.utc))
     data = Column(JSONB, nullable=False)

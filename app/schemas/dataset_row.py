@@ -1,10 +1,18 @@
 from pydantic import BaseModel
+from typing import Dict, Any
+from datetime import datetime
 from uuid import UUID
-from typing import Dict, Any, Optional
 
 
-class DatasetRowDTO(BaseModel):
-    id: Optional[UUID]
+class DatasetRowCreateDTO(BaseModel):
     dataset_id: UUID
-    # Type Any for dynamic JSON data
     data: Dict[str, Any]
+
+
+class DatasetRowUpdateDTO(BaseModel):
+    data: Dict[str, Any]
+
+
+class DatasetRowResponseDTO(DatasetRowCreateDTO):
+    id: UUID
+    created_at: datetime

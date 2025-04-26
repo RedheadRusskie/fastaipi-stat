@@ -1,19 +1,18 @@
 from fastapi import APIRouter, Depends, HTTPException, Security, Query
-from typing import List
 from sqlalchemy.orm import Session
 from uuid import UUID
 from app.models import User
 from app.auth import get_current_user
 from app.db.dependencies import get_db
 from app.models import Dataset, DatasetRow
-from app.schemas.dataset_row import DatasetRowDTO
+from app.schemas import DatasetRowCreateDTO, DatasetRowUpdateDTO
 
 router = APIRouter()
 
 
 @router.post("/row")
 async def create_row(
-    row_data: DatasetRowDTO,
+    row_data: DatasetRowCreateDTO,
     db: Session = Depends(get_db),
     user_info: dict = Security(get_current_user),
 ):
@@ -46,13 +45,10 @@ async def create_row(
     db.commit()
     db.refresh(new_row)
 
-    return {
-        "message": "Row created successfully",
-        "row_id": new_row.id,
-    }
+    return new_row
 
 
-@router.get("/row/{dataset_id}", response_model=List[DatasetRowDTO])
+@router.get("/row/{dataset_id}")
 async def read_rows(
     dataset_id: UUID,
     db: Session = Depends(get_db),
@@ -94,7 +90,7 @@ async def read_rows(
 @router.put("/row/{row_id}")
 async def update_row(
     row_id: UUID,
-    row_data: DatasetRowDTO,
+    row_data: DatasetRowUpdateDTO,
     db: Session = Depends(get_db),
     user_info: dict = Security(get_current_user),
 ):
@@ -128,10 +124,7 @@ async def update_row(
     db.commit()
     db.refresh(row)
 
-    return {
-        "message": "Row updated successfully",
-        "row_id": row.id,
-    }
+    return row
 
 
 @router.delete("/row/{row_id}")
