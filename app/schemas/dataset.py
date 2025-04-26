@@ -9,8 +9,6 @@ class DatasetDTO(BaseModel):
     description: str
 
 
-class DatasetResponseDTO(BaseModel):
+class DatasetResponseDTO(DatasetDTO):
     id: UUID
-    name: str
-    description: Optional[str] = None
     rows: List[DatasetRowDTO] = []
