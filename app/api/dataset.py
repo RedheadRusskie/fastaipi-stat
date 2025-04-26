@@ -1,6 +1,7 @@
 from fastapi import APIRouter, HTTPException, Depends, Security
-from typing import List
+from typing import List, Optional, Union
 from sqlalchemy.orm import Session
+from uuid import UUID
 from app.schemas import DatasetResponseDTO
 from app.auth import get_current_user
 from app.models import User
@@ -41,8 +42,11 @@ async def post_dataset(
     }
 
 
-@router.get("/dataset", response_model=List[DatasetResponseDTO])
+@router.get(
+    "/dataset", response_model=Union[DatasetResponseDTO, List[DatasetResponseDTO]]
+)
 async def get_dataset(
+    dataset_id: Optional[UUID] = None,
     db: Session = Depends(get_db),
     username: str = Security(get_current_user),
 ):
@@ -54,6 +58,51 @@ async def get_dataset(
             status_code=404, detail="Could not find user to fetch datasets for"
         )
 
+    if dataset_id is not None:
+        dataset = db.query(Dataset).filter(Dataset.id == dataset_id).first()
+
+        if dataset is None:
+            raise HTTPException(
+                status_code=404, detail="Could not find dataset with supplied ID"
+            )
+
+        return dataset
+
     datasets = db.query(Dataset).filter(Dataset.user_id == user.id).all()
 
     return datasets
+
+
+@router.delete("/dataset/{dataset_id}")
+async def delete_dataset(
+    dataset_id: UUID,
+    db: Session = Depends(get_db),
+    username: str = Security(get_current_user),
+):
+    user = db.query(User).filter(User.username == username).first()
+
+    if user is None:
+        raise HTTPException(
+            status_code=404, detail="Could not find user to fetch datasets for"
+        )
+
+    dataset_entry = (
+        db.query(Dataset)
+        .filter(
+            Dataset.id == dataset_id,
+            Dataset.user_id == user.id,
+        )
+        .first()
+    )
+
+    if dataset_entry is None:
+        raise HTTPException(
+            status_code=404, detail="Could not find dataset with supplied ID"
+        )
+
+    db.delete(dataset_entry)
+    db.commit()
+
+    return {
+        "message": f"Dataset of ID {dataset_id} removed successfully",
+    }
