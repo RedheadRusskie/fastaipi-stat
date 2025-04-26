@@ -111,6 +111,4 @@ async def delete_dataset(
     db.delete(dataset_entry)
     db.commit()
 
-    return {
-        "message": f"Dataset of ID {dataset_id} removed successfully",
-    }
+    return {"message": "Dataset of ID removed successfully", "dataset_id": dataset_id}

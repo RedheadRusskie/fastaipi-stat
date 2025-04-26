@@ -16,4 +16,9 @@ class Dataset(Base):
     )
     description = Column(String)
     created_at = Column(DateTime, default=datetime.now(timezone.utc))
-    rows = relationship("DatasetRow", backref="dataset", cascade="all, delete-orphan")
+    rows = relationship(
+        "DatasetRow",
+        backref="dataset",
+        cascade="all, delete-orphan",
+        lazy="noload",
+    )
