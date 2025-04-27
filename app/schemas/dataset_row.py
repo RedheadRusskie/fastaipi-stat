@@ -10,6 +10,7 @@ class DatasetRowCreateDTO(BaseModel):
 
 
 class DatasetRowUpdateDTO(BaseModel):
+    id: UUID
     data: Dict[str, Any]
 
 

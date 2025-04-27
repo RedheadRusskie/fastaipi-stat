@@ -53,6 +53,7 @@ async def get_dataset(
     user_id = user_info["user_id"]
 
     user = db.query(User).filter(User.id == user_id).first()
+
     if not user:
         raise HTTPException(
             status_code=404, detail="Could not find user by specified user ID"
