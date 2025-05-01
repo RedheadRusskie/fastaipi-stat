@@ -118,11 +118,11 @@ async def read_rows(
     return rows
 
 
-@router.get("/row/opearation/{dataset_id}")
+@router.get("/row/{dataset_id}/{operation}")
 async def calculate_on_data(
     dataset_id: UUID,
+    operation: str,
     column: str = Query(...),
-    operation: str = Query(...),
     # target_column required only for linear regression
     target_column: Optional[str] = Query(None),
     db: Session = Depends(get_db),
