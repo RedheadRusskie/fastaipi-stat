@@ -63,7 +63,7 @@ class StatsService:
         values = StatsService.extract_numeric_values(data, column)
         return {"variance": variance(values)}
 
-    @staticmethod()
+    @staticmethod
     def is_normally_distributed(
         data: List[Dict[str, Any]], column: str
     ) -> Dict[str, Any]:
@@ -97,12 +97,19 @@ class StatsService:
 
     @staticmethod
     def extract_numeric_values(data: List[Dict[str, Any]], column: str) -> List[float]:
-        values = [
-            row[column] for row in data if isinstance(row.get(column), (int, float))
-        ]
+        values = []
+
+        for row in data:
+            try:
+                if column not in row:
+                    raise KeyError(f"Column '{column}' does not exist in the data")
+                value = float(row[column])
+                values.append(value)
+            except (ValueError, TypeError, KeyError):
+                continue
 
         if not values:
-            raise ValueError(f"No valid numeric values found in column '{column}'")
+            raise ValueError(f"No valid numeric values found in column: '{column}'")
 
         return values
 

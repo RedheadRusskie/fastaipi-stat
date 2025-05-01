@@ -1,12 +1,13 @@
 from fastapi import APIRouter, Depends, HTTPException, Security, Query, Body
 from sqlalchemy.orm import Session
-from typing import List, Union
+from typing import List, Optional, Union
 from uuid import UUID
 from app.models import User
 from app.auth import get_current_user
 from app.db.dependencies import get_db
 from app.models import Dataset, DatasetRow
 from app.schemas import DatasetRowCreateDTO, DatasetRowUpdateDTO, DatasetRowResponseDTO
+from app.services import StatsService, StatisticalOperation
 
 router = APIRouter()
 
@@ -115,6 +116,70 @@ async def read_rows(
     )
 
     return rows
+
+
+@router.get("/row/opearation/{dataset_id}")
+async def calculate_on_data(
+    dataset_id: UUID,
+    column: str = Query(...),
+    operation: str = Query(...),
+    # target_column required only for linear regression
+    target_column: Optional[str] = Query(None),
+    db: Session = Depends(get_db),
+    user_info: dict = Security(get_current_user),
+):
+    user_id = user_info["user_id"]
+
+    user = db.query(User).filter(User.id == user_id).first()
+
+    if not user:
+        raise HTTPException(
+            status_code=404, detail="Could not find user by specified user ID"
+        )
+
+    dataset = (
+        db.query(Dataset)
+        .filter(Dataset.id == dataset_id, Dataset.user_id == user_id)
+        .first()
+    )
+
+    if not dataset:
+        raise HTTPException(
+            status_code=404, detail="Dataset not found or not owned by user"
+        )
+
+    rows = db.query(DatasetRow).filter(DatasetRow.dataset_id == dataset_id).all()
+    raw_data = [row.data for row in rows]
+
+    try:
+        verified_operation = StatisticalOperation(operation)
+    except ValueError:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Invalid operation '{operation}'",
+        )
+
+    if operation == "linear_regression" and not target_column:
+        raise HTTPException(
+            status_code=400, detail="target_column is required for linear regression"
+        )
+
+    if not all(column in row for row in raw_data):
+        raise HTTPException(
+            status_code=400, detail=f"Column '{column}' does not exist in the dataset"
+        )
+
+    try:
+        result = StatsService.calculate(
+            data=raw_data,
+            column=column,
+            operation=verified_operation,
+            target_column=target_column,
+        )
+    except ValueError as error:
+        raise HTTPException(status_code=400, detail=str(error))
+
+    return {"result": result}
 
 
 @router.put("/row")
