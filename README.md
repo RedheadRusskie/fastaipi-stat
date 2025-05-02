@@ -1,11 +1,11 @@
 # Fastapi-Stat
 
 <p align="center">
-  <img src="" alt="Logo" width="200" />
+  <img src="https://github.com/RedheadRusskie/fastaipi-stat/blob/develop/assets/stat-con.svg" alt="Logo" width="200" />
 </p>
 
 <p align="center">
-  A lightweight, full-stack to-do list application built with Python and FastAPI on the backend, PostgreSQL for data persistence, and Docker for seamless deployment.
+  A lightweight BE application built with Python and FastAPI, PostgreSQL for data persistence, and Docker for seamless deployment.
 </p>
 
 ## Tech Stack
@@ -21,8 +21,6 @@
 - [Installation](#installation)
 - [Environment](#environment)
 - [Usage](#usage)
-- [Building](#building)
-- [Testing](#testing)
 
 ## Installation
 
@@ -37,32 +35,34 @@ git clone https://github.com/RedheadRusskie/fastaipi-stat.git
 Create a `.env` file in the root directory. You can use this template:
 
 ```env
-DATABASE_URL=postgresql://postgres:postgres@db:5432/tododb
+# PostgreSQL environment variables
+POSTGRES_DB=db-name
+OSTGRES_USER=db-user
+POSTGRES_PASSWORD=db-password
+POSTGRES_DB_PORT=db-port
+
+# FastAPI app configuration
+APP_HOST_PORT=fastapi-port
+
+# Auth
+AUTH_SECRET=your-secret
 ```
 
 If using Docker, you can also define this in the `docker-compose.yml` file under the `environment` section.
 
-## Usage (Docker Compose Recommended)
+## Usage
 
-Spin up the stack with:
+Build the containers with:
 
 ```bash
-docker compose -f docker-compose.yml up -d
+docker compose -f docker-compose.yaml build
+```
+
+And spin up with with:
+
+```bash
+docker compose -f docker-compose.yaml up -d
 ```
 
 The FastAPI server will be available at: [http://localhost:8000](http://localhost:8000)  
 Swagger Docs: [http://localhost:8000/docs](http://localhost:8000/docs)
-
-## Running the project
-
-Rebuild the Docker containers if needed:
-
-```bash
-docker compose -f docker-compose.yml build
-```
-
-And running with:
-
-```bash
-docker compose -f docker-compose.yml up -d
-```
