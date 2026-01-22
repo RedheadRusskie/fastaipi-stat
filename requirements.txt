@@ -8,3 +8,7 @@ passlib[bcrypt]
 python-jose
 python-multipart
 numpy
+sqlalchemy-utils
+pytest
+pytest-asyncio
+httpx
