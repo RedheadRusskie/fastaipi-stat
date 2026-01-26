@@ -42,4 +42,5 @@ jobs:
 
       - name: Run Tests
         run: |
+          export TEST=1
           python -m pytest --maxfail=3 --disable-warnings

@@ -22,7 +22,12 @@ app.include_router(dataset_row.router)
 
 @app.on_event("startup")
 def on_startup():
-    Base.metadata.create_all(bind=engine)
+    """
+    Only create tables if an actual engine exists.
+    This avoids CI/test errors when engine is mocked in tests.
+    """
+    if engine is not None:
+        Base.metadata.create_all(bind=engine)
 
 
 @app.get("/")
