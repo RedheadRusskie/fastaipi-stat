@@ -1,10 +1,7 @@
-import pytest
 from uuid import uuid4
 from datetime import datetime
 from app.models import User, Dataset, DatasetRow
-from app.schemas import DatasetRowCreateDTO, DatasetRowUpdateDTO
 from app.auth import get_current_user
-from app.services import StatisticalOperation
 
 
 def test_create_row_success(client, mock_get_db, app_fixture):
