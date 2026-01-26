@@ -1,6 +1,5 @@
-from unittest.mock import patch
 from uuid import uuid4
-from app.models import User, Dataset
+from app.models import User
 from app.auth import get_current_user
 
 

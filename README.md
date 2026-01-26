@@ -5,7 +5,7 @@
 </p>
 
 <p align="center">
-  A lightweight BE application built with Python and FastAPI, PostgreSQL for data persistence, Docker for seamless deployment and unit tests for TDD.
+  A lightweight BE application built with Python and FastAPI, PostgreSQL for data persistence, Docker for seamless deployment, unit tests for TDD and GitHub Actions for CI.
 </p>
 
 ## Tech Stack
@@ -16,6 +16,7 @@
 - **Environment Management**: Pydantic
 - **Unit Testing**: Pytest
 - **Containerisation**: Docker, Docker Compose
+- **Continuous Integration**: GitHub Actions
 
 ## Table of Contents
 
@@ -23,6 +24,7 @@
 - [Environment](#environment)
 - [Usage](#usage)
 - [Testing](#testing)
+- [CI](#ci)
 
 ## Installation
 
@@ -94,3 +96,14 @@ Unit tests can be found under the `app/tests` directory. To run the tests, run:
 ```bash
 python -m pytest
 ```
+
+## CI
+
+This repository uses GitHub Actions to enforce code quality and correctness. Workflows are triggered when branches are pushed or a pull request is created. They perform the following actions:
+
+1. Lint & formatting checks
+2. Running and checking unit tests
+
+These workflows can be found in `.github/workflows`.
+
+During CI, the database engine is mocked (by setting `TEST=1`) in order to avoid having to create an additional PostgreSQL instance.
