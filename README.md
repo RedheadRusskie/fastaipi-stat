@@ -5,7 +5,7 @@
 </p>
 
 <p align="center">
-  A lightweight BE application built with Python and FastAPI, PostgreSQL for data persistence, and Docker for seamless deployment.
+  A lightweight BE application built with Python and FastAPI, PostgreSQL for data persistence, Docker for seamless deployment and unit tests for TDD.
 </p>
 
 ## Tech Stack
@@ -14,6 +14,7 @@
 - **Database**: PostgreSQL
 - **ORM**: SQLAlchemy
 - **Environment Management**: Pydantic
+- **Unit Testing**: Pytest
 - **Containerisation**: Docker, Docker Compose
 
 ## Table of Contents
@@ -21,6 +22,7 @@
 - [Installation](#installation)
 - [Environment](#environment)
 - [Usage](#usage)
+- [Testing](#testing)
 
 ## Installation
 
@@ -28,6 +30,24 @@
 
 ```bash
 git clone https://github.com/RedheadRusskie/fastaipi-stat.git
+```
+
+2. **Create the virtual environment**:
+
+```bash
+python3 -m venv .venv
+```
+
+3. **Activate the virtual environment**:
+
+```bash
+source .venv/bin/activate
+```
+
+4. **Install the dependencies**:
+
+```bash
+pip install -r requirements.txt
 ```
 
 ## Environment
@@ -66,3 +86,11 @@ docker compose -f docker-compose.yaml up -d
 
 The FastAPI server will be available at: [http://localhost:8000](http://localhost:8000)  
 Swagger Docs: [http://localhost:8000/docs](http://localhost:8000/docs)
+
+## Testing
+
+Unit tests can be found under the `app/tests` directory. To run the tests, run:
+
+```bash
+python -m pytest
+```
