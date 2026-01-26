@@ -1,22 +1,18 @@
 from app.models.user import User
 
 
-def test_register_user_success(client):
-    mock_user = {
-        "username": "johndoe",
-        "password": "password",
-    }
+def test_register_user_success(client, app_fixture):
+    mock_user = {"username": "johndoe", "password": "password"}
+
     response = client.post("/user", json=mock_user)
 
     assert response.status_code == 200
-
     json_data = response.json()
-
     assert json_data["message"] == f"User {mock_user['username']} created successfully"
     assert "user_id" in json_data
 
 
-def test_register_user_already_exists(client, mock_get_db):
+def test_register_user_already_exists(client, mock_get_db, app_fixture):
     mock_user = {
         "id": "1234",
         "username": "johndoe",
